@@ -3,29 +3,32 @@ pipeline {
    agent any
    stages{
       stages {
-       stage("Buil"){
+       stage("Build"){
          echo "Building..."
        }
-      post{
-        always{
-        mail to: " moahemd.sa9889@gmail.com
-        subject: "build status emmail"
-        body: " build log attached"
-        }
+    
+        
       }
       }
 
+
+stage("Unit testing"){
+
+Post{
+  always{
+    emailext(
+      subject: "Itegration Tests on Staging Status"
+      to: "mohamed.sa9889@gmail.com"
+
+     attachLog: true
+
+}
 stege("Code Anaylsis"){
     steps{
       echo "Analysing the code"
     }
 }
 
-stage("Security scan"){
- steps{
-  echo "Perform secutiy scan the scan on code using OWASP ZAP"
- }
-}
 
 stage("Deploy to Staging"){
    steps {
@@ -33,30 +36,30 @@ stage("Deploy to Staging"){
    }
 }
 
+
+
+
+
+stage("Security scan"){
+ steps{
+  echo "Perform secutiy scan the scan on code using OWASP ZAP"
+  post{
+        always{
+        mail to: " moahemd.sa9889@gmail.com
+        subject: "build status emmail"
+           body: " build log attached"
+ }
+}
+}
+}
+
 stage("Integration Tests on Staging"){
   steps{
     echo "Now Running integration tests on staging enviornment using Selenium"
   }
- Post{
-  always{
-    emailext(
-      subject: "Itegration Tests on Staging Status"
-      to: "mohamed.sa9889@gmail.com"
-
-     attachLog: true
-    )
-  }
- }
+ 
 }
 
-
-
-
-stage("Test"){
-  steps{
-     echo "Testing..."
-  }
-}
 stage("Deploy"){
  steps{
     echo "Deploying the application to an AWS ECS instance"
