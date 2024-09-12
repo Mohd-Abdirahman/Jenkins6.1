@@ -1,82 +1,67 @@
 pipeline {
 
-   agent any
-   stages{
-      stages {
-       stage("Build"){
-         echo "Building..."
-       }
-    
+    agent any
+
+    stages {
         
-      }
-      }
+        stage("Build") {
+            steps {
+                echo "Building..."
+            }
+        }
 
+        stage("Unit Testing") {
+            steps {
+                echo "Running Unit Tests..."
+            }
+            post {
+                always {
+                    emailext(
+                        subject: "Unit Testing Status",
+                        to: "mohamed.sa9889@gmail.com",
+                        attachLog: true
+                    )
+                }
+            }
+        }
 
-stage("Unit testing"){
+        stage("Code Analysis") {
+            steps {
+                echo "Analyzing the code"
+            }
+        }
 
-Post{
-  always{
-    emailext(
-      subject: "Itegration Tests on Staging Status"
-      to: "mohamed.sa9889@gmail.com"
+        stage("Deploy to Staging") {
+            steps {
+                echo "Deploying application to AWS EC2"
+            }
+        }
 
-     attachLog: true
+        stage("Security Scan") {
+            steps {
+                echo "Performing security scan on code using OWASP ZAP"
+            }
+            post {
+                always {
+                    emailext(
+                        to: "mohamed.sa9889@gmail.com",
+                        subject: "Security Scan Status",
+                        body: "Build log attached"
+                    )
+                }
+            }
+        }
 
-}
-stege("Code Anaylsis"){
-    steps{
-      echo "Analysing the code"
+        stage("Integration Tests on Staging") {
+            steps {
+                echo "Running integration tests on staging environment using Selenium"
+            }
+        }
+
+        stage("Deploy") {
+            steps {
+                echo "Deploying the application to an AWS ECS instance"
+            }
+        }
     }
 }
-
-
-stage("Deploy to Staging"){
-   steps {
-     echo "Deploying application AWS EC2"
-   }
-}
-
-
-
-
-
-stage("Security scan"){
- steps{
-  echo "Perform secutiy scan the scan on code using OWASP ZAP"
-  post{
-        always{
-        mail to: " moahemd.sa9889@gmail.com
-        subject: "build status emmail"
-           body: " build log attached"
- }
-}
-}
-}
-
-stage("Integration Tests on Staging"){
-  steps{
-    echo "Now Running integration tests on staging enviornment using Selenium"
-  }
- 
-}
-
-stage("Deploy"){
- steps{
-    echo "Deploying the application to an AWS ECS instance"
- }
-}
-
-
-}
-
-
-
-
-
-
-
-}
-
-
-        
-
